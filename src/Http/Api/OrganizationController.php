@@ -15,6 +15,9 @@
 
 namespace Anacreation\Organization\Http\Api;
 
+use Anacreation\Organization\Actions\AttachEntityToOrganization;
+use Anacreation\Organization\Actions\DetachEntityFromOrganization;
+use Anacreation\Organization\DataTransferObject\EntityData;
 use Anacreation\Organization\Entities\Organization;
 use Anacreation\Organization\Http\Resources\OrganizationResource;
 use App\Http\Controllers\Controller;
@@ -54,5 +57,43 @@ class OrganizationController extends Controller
         $organization->delete();
 
         return response()->json('completed');
+    }
+
+    /**
+     * @param \Illuminate\Http\Request                                     $request
+     * @param \Anacreation\Organization\Entities\Organization              $organization
+     * @param \Anacreation\Organization\Actions\AttachEntityToOrganization $action
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function attach(
+        Request $request, Organization $organization,
+        AttachEntityToOrganization $action): JsonResponse {
+        $validatedData = $this->validate($request,
+                                         [
+                                             'entity_type' => 'required',
+                                             'entity_id'   => 'required|numeric',
+                                         ]);
+        $entity = $action->execute($organization,
+                                   EntityData::fromFormData($validatedData['entity_id'],
+                                                            $validatedData['entity_type']));
+
+        return response()->json($entity);
+    }
+
+    public function detach(
+        Request $request, Organization $organization,
+        DetachEntityFromOrganization $action): JsonResponse {
+        $validatedData = $this->validate($request,
+                                         [
+                                             'entity_type' => 'required',
+                                             'entity_id'   => 'required|numeric',
+                                         ]);
+        $action->execute($organization,
+                         EntityData::fromFormData($validatedData['entity_id'],
+                                                  $validatedData['entity_type']));
+
+        return response()->json('completed');
+
     }
 }

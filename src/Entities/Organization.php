@@ -2,7 +2,6 @@
 
 namespace Anacreation\Organization\Entities;
 
-use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +11,7 @@ class Organization extends Model
 {
     protected $fillable = [
         'label',
+        'parent_id',
     ];
 
     // region Relation
@@ -25,15 +25,6 @@ class Organization extends Model
         return $this->hasMany(Organization::class,
                               'parent_id');
     }
-
-//    public function users() {
-//        return $this->morphedByMany(User::class,
-//                                    'entity',
-//                                    'entity_organization')
-//                    ->withPivot('include_sub_org')
-//                    ->as('entity')
-//                    ->using(Entity::class);
-//    }
 
     // endregion
 
@@ -52,23 +43,21 @@ class Organization extends Model
         return $this->hasMany(Entity::class);
     }
 
-    public static function getTree(
-        string $label = null): Collection {
+    public static function getTree(int $organization_id = null): Collection {
         $instance = new self;
 
-        $query = $label === null ?
+        $query = $organization_id === null ?
             $instance->where('parent_id',
                              null):
-            $instance->where('label',
-                             $label);
+            $instance->where('id',
+                             $organization_id);
 
         return $query->with('children')
                      ->get()
                      ->each(fn($o) => $instance->loadChildren($o));
     }
 
-    private function loadChildren(
-        Organization $organization) {
+    private function loadChildren(Organization $organization) {
         $organization->load('children');
         $organization->children
             ->each(fn($o) => $this->loadChildren($o));

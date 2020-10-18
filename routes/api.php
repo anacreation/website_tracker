@@ -42,6 +42,12 @@ Route::group([
                 Route::delete('organizations/{organization}',
                               OrganizationController::class."@destroy")
                      ->name('organizations::destroy');
+                Route::post('organizations/{organization}/attach',
+                            OrganizationController::class."@attach")
+                     ->name('organizations::attach');
+                Route::post('organizations/{organization}/detach',
+                            OrganizationController::class."@detach")
+                     ->name('organizations::detach');
 
             });
 
