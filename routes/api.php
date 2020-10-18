@@ -13,12 +13,7 @@
  * @copyright   Copyright (c) A & A Creation (https://anacreation.com/)
  */
 
-use Anacreation\Workflow\Entities\Workflow;
-use Anacreation\Workflow\Http\Api\WorkflowController;
-use Anacreation\Workflow\Http\Api\WorkflowStateController;
-use Anacreation\Workflow\Http\Api\WorkflowTransitionController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Anacreation\Organization\Http\Api\OrganizationController;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
@@ -27,26 +22,15 @@ Route::group([
              ],
     function() {
 
-
         Route::group([
                          'middleware' => config('organization.route.middleware',
                                                 []),
                          'prefix'     => config('organization.route.prefix',
-                                                ''),
+                                                null),
                      ],
             function() {
 
-
-                Route::get('/workflows',
-                           OrganizationController::class."@index");
-                Route::put('/workflows/{workflow}',
-                           OrganizationController::class."@update");
-                Route::delete('/workflows/{workflow}',
-                              OrganizationController::class."@destroy");
-                Route::post('/workflows',
-                            OrganizationController::class."@store");
-                Route::get('/workflows/{workflow}',
-                           OrganizationController::class."@show");
+                Route::get('organizations',OrganizationController::class."@index")->name('organizations::index');
 
             });
 

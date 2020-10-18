@@ -17,8 +17,8 @@ use App\User;
 
 return [
     'route'    => [
-        //        'middleware' => 'auth:sanctum',
-        'prefix' => null,
+//        'middleware' => null,
+        'prefix'     => null,
     ],
     'entities' => [
         'users' => User::class,
