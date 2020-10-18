@@ -21,7 +21,7 @@ use Anacreation\Organization\Entities\Organization;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
-trait BelongsToOrganization
+trait InOrganization
 {
     protected function organizations(): MorphToMany {
         return $this->morphToMany(Organization::class,
@@ -33,13 +33,14 @@ trait BelongsToOrganization
                     ->withTimestamps();
     }
 
-    public function inOrganization(Organization $organization): bool {
+    public function isInOrganization(Organization $organization): bool {
         return $organization->inOrganization($this);
     }
 
-    public function assignToOrganization(Organization $organization): void {
+    public function assignToOrganization(
+        Organization $organization, bool $include_sub_org = false): void {
         try {
-            $this->organizations()->attach($organization);
+            $this->organizations()->attach($organization,['include_sub_org'=>$include_sub_org]);
         } catch (Exception $e) {
         }
     }
