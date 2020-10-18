@@ -19,10 +19,40 @@ use Anacreation\Organization\Entities\Organization;
 use Anacreation\Organization\Http\Resources\OrganizationResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OrganizationController extends Controller
 {
     public function index(): JsonResponse {
         return response()->json(OrganizationResource::collection(Organization::all()));
+    }
+
+    public function store(Request $request): JsonResponse {
+        $validatedData = $this->validate($request,
+                                         [
+                                             'label'     => 'required',
+                                             'parent_id' => 'nullable|exists:organizations,id',
+                                         ]);
+
+        return response()->json(new OrganizationResource(Organization::create($validatedData)));
+    }
+
+    public function update(Request $request, Organization $organization): JsonResponse {
+        $validatedData = $this->validate($request,
+                                         [
+                                             'label'     => 'required',
+                                             'parent_id' => 'nullable|exists:organizations,id',
+                                         ]);
+
+        $organization->update($validatedData);
+
+        return response()->json(new OrganizationResource($organization));
+    }
+
+    public function destroy(Organization $organization): JsonResponse {
+
+        $organization->delete();
+
+        return response()->json('completed');
     }
 }
