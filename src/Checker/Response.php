@@ -35,4 +35,32 @@ class Response
         $this->params = $params;
         $this->checker = $checker;
     }
+
+    /**
+     * @return \Anacreation\StatusChecker\Contract\CheckerInterface
+     */
+    public function getChecker(): \Anacreation\StatusChecker\Contract\CheckerInterface {
+        return $this->checker;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSuccess(): bool {
+        return $this->success;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string {
+        return $this->message;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array {
+        return $this->params;
+    }
 }
