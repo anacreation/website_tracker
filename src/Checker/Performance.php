@@ -8,8 +8,8 @@
  * version in the future.
  *
  * @category    A & A Creation
- * @package     anacreation/website_checker
- * @Date        : 24/11/2020
+ * @package
+ * @Date        : 28/11/2020
  * @copyright   Copyright (c) A & A Creation (https://anacreation.com/)
  */
 
@@ -18,7 +18,7 @@ namespace Anacreation\StatusChecker\Checker;
 
 use Anacreation\StatusChecker\Contract\CheckerInterface;
 
-class Availability implements CheckerInterface
+class Performance implements CheckerInterface
 {
 
     public function check(string $url): Response {
@@ -36,19 +36,8 @@ class Availability implements CheckerInterface
                     CURLOPT_TIMEOUT,
                     $timeout);
         curl_exec($ch);
-        $http_code = curl_getinfo($ch,
-                                  CURLINFO_HTTP_CODE);
-
-
-        return (($http_code == "200") || ($http_code == "302")) ?
-            new Response($ch,
-                         $this,
-                         true,
-                         'successful'):
-            new Response($ch,
-                         $this,
-                         false,
-                         'failed to get');
-
+        return new Response($ch,
+                            $this,
+                            true);
     }
 }

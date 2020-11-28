@@ -48,7 +48,7 @@ class CheckerManager
     public function execute(): array {
         $results = [];
         foreach($this->checkers as $checker) {
-            $results[] = [$checker->check($this->url),];
+            $results[] = $checker->check($this->url);
         }
 
         return $results;
